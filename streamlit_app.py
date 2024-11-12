@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import math
 from pathlib import Path
+from PIL import Image
 
 # Set the title and favicon that appear in the Browser's tab bar.
 st.set_page_config(
@@ -16,72 +17,68 @@ MLB scouting departments often follow different methodologies around scouting. W
 We want to predict the performance of a player based on NCAA statistics on how they’ll perform in the MLB. A plethora of data is available surrounding baseball performance. 
 Hitting metrics are often focused on for contribution to team performance, but there are also defensive statistics available, and pitchers can be compared. 
 It’s important to realize that a team’s number of outs available. This is a scarce resource, so whichever action a player can do to reduce the depletion of this resource is good for the team. 
-A team’s goal should be to win games, and the best way to do this is to score runs. So the more runs a team can score, the more games they should win. [5].
+A team’s goal should be to win games, and the best way to do this is to score runs. So the more runs a team can score, the more games they should win. [3].
 
 Baseball is a sport rich with data, and because every team plays 162 games in a season, variance is lower with the larger sample size. Some popular hitting metrics include batting average 
 (player hits / number of at bats), RBI (runs batted in), and home runs. OPS, “on-base plus slugging” is correlated with the number of runs scored, and is very popular in sabermetrics. 
 It adds the on-base percentage and slugging percentage (total bases reached / at bats). These two metrics individually are also helpful to look at. Popular pitching metrics include wins 
-(pitcher when a team takes the lead and doesn’t lose it, with some exceptions), ERA (earned run average), and strikeouts. [3, 4]
+(pitcher when a team takes the lead and doesn’t lose it, with some exceptions), ERA (earned run average), and strikeouts. [1, 2]
 """)
 
+st.title("Problem Definition")
 
-st.title("Methods")
+st.write(""" 
+Our project seeks to predict MLB player success based on NCAA performance metrics,
+ focusing on both hitting and pitching statistics that are central to team performance. 
+ Key metrics such as OPS, ERA, and strikeouts offer insights into a player's contribution to run scoring and game-winning potential. 
+ We're passionate about this to see if we can figure out patterns and correlations which can increase potential for future wins.
+""")
 
-st.title("Preprocessing Methods")
-
-st.markdown(
-    """
-### Encode Categorical Data:
-To encode categorical data numerically for valid input for models we will use a One-Hot Encoder from `sklearn.preprocessing.OneHotEncoder`.
-
-### Normalize Data:
-To ensure features are all on the same scale we will use scaling from `sklearn.preprocessing.StandardScaler`.
-
-### Select Relevant Features:
-To identify and select the most relevant features to our classification from the data-set we will utilize Principal Component Analysis from `sklearn.decomposition.PCA`.
-
-### Address Data Imbalance:
-Due to the fact there are many more players in the NFL than College Football, we will have to rebalance our data. A recent study from researchers analyzing methods for rebalancing datasets found Synthetic Minority Oversampling Technique or SMOTE to be the most effective [1]. For this we can use `imblearn.over_sampling.SMOTE`.
-"""
-)
-
-st.title("ML Algorithms/Models for Baseball Performance Prediction")
-
-# Random Forest
-st.header("Random Forest (Supervised)")
+st.header("Methods")
+st.subheader("Preprocessing")
 st.write("""
-To predict player performance metrics in baseball such as batting average using NCAA data. Random forest is beneficial for data with a large number of features.
-We can use the scikit-learn library with the function `RandomForestClassifier`.
+Before training our model, we standardized our data using `sklearn.preprocessing.StandardScaler`. Standardizing data is useful in this case 
+because we have features on different scales, such as batting average and number of runs. Ensuring all features are on the same scale 
+prevents features with larger scales from disproportionately influencing the model.
 """)
 
-# Support Vector Machines (SVM)
-st.header("Support Vector Machines (SVM) (Supervised)")
+st.subheader("Model")
 st.write("""
-To predict categorical outcomes such as whether a collegiate player turns pro. SVM can help to predict binary outcomes.
-We can use the scikit-learn library with the function `SVC`.
+For our model, we selected a **Random Forest Regressor** from `sklearn.ensemble.RandomForestRegressor`. This model offers several advantages 
+for our use case:
+- **Lower risk of overfitting**: By selecting a random subset of features for each decision tree, Random Forests have a reduced chance of overfitting, especially with a sufficient number of estimators.
+- **High-dimensional data handling**: Random Forests are well-suited to manage datasets with many features, which aligns with our data.
+- **Feature importance evaluation**: Random Forests make it easy to assess the contribution of each feature, helping us determine which statistics are most predictive of a player's professional batting average.
 """)
 
-# K-Means
-st.header("K-Means (Unsupervised)")
+st.header("Results")
+
 st.write("""
-To find players with similar characteristics and statistics. K-Means can help to cluster similar player profiles.
-We can use the scikit-learn library with the function `KMeans`.
+After training our **Random Forest Regressor** with 100 estimators, we achieved the following results:
+- **Mean Squared Error (MSE):** 0.00036267402500000077
+- **R-squared (R²):** 0.974410089089329
 """)
 
-# Gaussian Mixture Model (GMM)
-st.header("Gaussian Mixture Model (GMM) (Unsupervised)")
+image1 = Image.open("1111.png")
+image2 = Image.open("2222.png")
+st.image(image1, use_container_width=True)
+st.image(image2, use_container_width=True)
+
 st.write("""
-To find players with similar characteristics and statistics. GMM can help to show clusters with varying shapes, densities, and overlaps which provide more flexibility for our data.
-We can use the scikit-learn library with the function `GaussianMixture`.
+These metrics indicate that the model has a high predictive accuracy:
+- The low **MSE** shows minimal prediction error, meaning the predicted batting averages are close to the actual values.
+- The **R-squared value of 0.974** implies that the model explains 97.4% of the variance in batting average outcomes. This high R² suggests that the model captures the majority of necessary information, providing a strong indication of a well-fitting model.
 """)
 
-st.header("Potential Results + Discussion")
+st.write("""
+The **Random Forest Regressor** performed well because it effectively handles high-dimensional data by using random subsets of features for each tree, which helps reduce overfitting and improves generalization. Key features, such as **mlb_SLG** and **mlb_OBP**, were identified as strong predictors, aligning with known baseball statistics. With 100 estimators, the model balances accuracy and generalization, achieving both a high R² and low MSE.
+""")
 
-st.markdown(
-    """
-To test quantitatively, we'll use accuracy, precision, and F1 score to evaluate our ML model. Accuracy measures overall performance, precision measures true positive predictions, and the F1 score will balance precision and recall for us. This aligns with algorithms like Random Forest and Logistic Regression, which are suitable for binary classification. High precision and F1 scores would indicate that our model predicts MLB success reliably while addressing imbalances. [2] Project goals that we have are improving prediction accuracy by selecting relevant features and normalizing data, with expected results of balanced performance across all metrics. We would also like to create an end-to-end model which to somewhat accuracy predicts college/high-school to MLB success.
-"""
-)
+st.subheader("Future Work")
+st.write("""
+Moving forward, we plan to perform **cross-validation** to tune hyperparameters, which will help optimize model performance. Additionally, we want to explore other data preprocessing methods. Although we chose **standardization** due to the varied scale of features, we are considering **Principal Component Analysis (PCA)** as an alternative. This analysis will help us understand the impact on training time and model performance.
+""")
+
 st.write("[Click here to view the Gantt Chart](https://docs.google.com/spreadsheets/d/1u2V7eAzZfUiB1OnysyVkAIUWN8Op6MRT/edit?usp=sharing&ouid=112263630298576499385&rtpof=true&sd=true)")
 
 tasks = {
@@ -124,7 +121,7 @@ st.header("Contribution Table")
 
 data = {
     'Person': ['Josh Forden', 'Anthony Pastrana', 'Saisaketh Koppu', 'Steven Hao', 'Arnav Chintawar'],
-    'Tasks Completed': ['Intro and Background and Baseball Ideation', 'Preprocessing Methods', 'Streamlit + Github Creation and Results + Discussion', 'ML Algorithms/Models', 'Video and Slides']
+    'Tasks Completed': ['Data Sourcing and Cleaning', 'Results and Discussion, Contribution Table, GANTT Chart', 'Streamlit + Github and Results', 'ML Model, Visualization/Metrics', 'Data Preprocessing']
 }
 
 df = pd.DataFrame(data)
@@ -137,8 +134,6 @@ st.header("References")
 
 st.markdown(
     """
-1. Y. F. Roumani, "Sports analytics in the NFL: classifying the winner of the Superbowl," Annals of Operations Research, vol. 325, no. 1, pp. 715–730, 2023, doi: 10.1007/s10479-022-05063-x.
-2. N. Sharma, “Understanding and Applying F1 Score: A Deep Dive with Hands-On Coding,” Arize AI, Jun. 06, 2023. https://arize.com/blog-course/f1-score/
 3. J. Zimmerman, “A new way to look at College Players’ Stats,” The Hardball Times,  https://tht.fangraphs.com/a-new-way-to-look-at-college-players-stats/ (accessed Oct. 4, 2024). 
 4. “Baseball statistics, ” Baseball Reference, Feb. 23, 2024. https://www.baseball-reference.com/bullpen/Talk:Baseball_statistics
 5. “Pythagorean Winning Percentage,” MLB Advanced Media, 2024. https://www.mlb.com/glossary/advanced-stats/pythagorean-winning-percentage
