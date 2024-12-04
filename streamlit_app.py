@@ -57,7 +57,7 @@ For our model we selected a Random Forest Regressor from sklearn.ensemble. Rando
 We also implemented Linear Regression from sklearn.linear_model.LinearRegression as our second model. Its simplicity and interpretability make it a strong choice for this baseball prediction task. The linear model can capture direct relationships between college and professional statistics and tell us how each college statistic contributes to MLB performance through its coefficients, providing clear insights into which metrics are most important for predicting future success.
 For our third model, we employed Support Vector Regression with an RBF kernel from sklearn.svm.SVR. SVR was chosen to explore potential non-linear relationships between college and professional statistics that simpler models might miss. The RBF kernel allows the model to capture more complex patterns in player development trajectories, though this added complexity didn't necessarily translate to better predictions in our case""")
 
-st.header("Results")
+st.header("Results + Discussion")
 
 st.write("""
 After implementing and evaluating three distinct machine learning models for predicting MLB batting averages from NCAA statistics, we achieved varying levels of success with each approach. Here we present our findings and analysis:
